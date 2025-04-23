@@ -100,22 +100,38 @@ export const useStickerStore = defineStore('sticker', {
                 }
 
                 if (this.selectedTags.length > 0) {
-                    params.tags = this.selectedTags;
+                    params.tags = [...this.selectedTags]; // 创建副本避免引用问题
                 }
 
                 const response: PaginatedResponse<Sticker> = await getStickers(params);
 
                 if (resetPage || this.page === 1) {
-                    this.stickers = response.items;
+                    // 首页数据直接替换，无需去重
+                    this.stickers = Object.freeze(response.items) as unknown as Sticker[];
                 } else {
-                    this.stickers = [...this.stickers, ...response.items];
+                    // 使用ID索引去重，性能优化
+                    const existingIds = new Set(this.stickers.map(s => s.id));
+
+                    // 过滤掉已存在的表情包
+                    const newUniqueStickers = response.items.filter(sticker => !existingIds.has(sticker.id));
+
+                    // 合并数组 - 只添加新的不重复项
+                    if (newUniqueStickers.length > 0) {
+                        this.stickers = [...this.stickers, ...newUniqueStickers];
+                    }
                 }
 
                 this.total = response.total;
                 this.pages = response.pages;
             } catch (error) {
-                console.error('Failed to fetch stickers:', error);
-                ElMessage.error('获取表情包列表失败');
+                // 错误处理 - 增加具体错误信息
+                const errorMessage = error instanceof Error ? error.message : '未知错误';
+                console.error(`获取表情包列表失败: ${errorMessage}`, error);
+                ElMessage.error({
+                    message: `获取表情包列表失败: ${errorMessage}`,
+                    duration: 3000,
+                    showClose: true
+                });
             } finally {
                 this.loading = false;
             }
