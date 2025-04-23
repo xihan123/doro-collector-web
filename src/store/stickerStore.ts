@@ -107,7 +107,7 @@ export const useStickerStore = defineStore('sticker', {
 
                 if (resetPage || this.page === 1) {
                     // 首页数据直接替换，无需去重
-                    this.stickers = Object.freeze(response.items) as unknown as Sticker[];
+                      this.stickers = response.items as Sticker[];
                 } else {
                     // 使用ID索引去重，性能优化
                     const existingIds = new Set(this.stickers.map(s => s.id));
