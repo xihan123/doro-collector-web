@@ -92,7 +92,7 @@ export const downloadSelectedStickers = async (stickers: Sticker[]): Promise<voi
 
                 if (proxyResponse.ok) {
                     const blob = await proxyResponse.blob();
-                    zip.file(sticker.md5, blob);
+                    zip.file(sticker.md5 + '.' + extension, blob);
                 } else {
                     console.error(`Failed to download sticker ${sticker.id} via proxy`);
                 }
