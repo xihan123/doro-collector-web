@@ -1,0 +1,34 @@
+{
+  "name": "doro-sticker-web",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.x",
+    "@yeger/vue-masonry-wall": "^5.0.18",
+    "axios": "^1.8.x",
+    "element-plus": "^2.9.x",
+    "file-saver": "^2.0.x",
+    "jszip": "^3.10.x",
+    "pinia": "^3.0.x",
+    "vue": "^3.5.x",
+    "vue-router": "^4.5.x"
+  },
+  "devDependencies": {
+    "@types/file-saver": "^2.0.x",
+    "@types/lodash-es": "^4.17.x",
+    "@types/node": "^22.11.x",
+    "@vitejs/plugin-vue": "^5.2.x",
+    "sass": "^1.87.x",
+    "typescript": "^5.8.x",
+    "unplugin-auto-import": "^19.1.x",
+    "unplugin-vue-components": "^28.5.x",
+    "vite": "^6.3.x",
+    "vue-tsc": "^2.2.x"
+  }
+}
