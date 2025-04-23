@@ -42,6 +42,9 @@ const router = createRouter({
 router.beforeEach((to, _from, next) => {
     document.title = `${to.meta.title || '表情包收集'} - DORO`;
     next();
+    document.body.style.overflow = '';
+    document.body.style.position = '';
+    document.documentElement.style.overflow = '';
 });
 
 export default router;
