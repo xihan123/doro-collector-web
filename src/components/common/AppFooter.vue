@@ -3,7 +3,8 @@
     <div class="footer-content">
       <div class="footer-links">
         <router-link to="/about" class="footer-link">关于</router-link>
-        <a href="https://github.com/xihan123/doro-collector-api" target="_blank" class="footer-link">GitHub</a>
+        <a href="https://github.com/xihan123/doro-collector-api" target="_blank" class="footer-link">API</a>
+        <a href="https://github.com/xihan123/doro-collector-web" target="_blank" class="footer-link">UI</a>
       </div>
 
       <p class="copyright">© {{ currentYear }} DORO 表情包收集. All Rights Reserved.</p>
@@ -28,7 +29,7 @@ import {computed, ref} from 'vue';
 const currentYear = computed(() => new Date().getFullYear());
 
 // 使用中国格式的日期时间 (YYYY-MM-DD HH:MM:SS)
-const formattedDateTime = ref('2025-04-22 14:55:17');
+const formattedDateTime = ref('2025-04-23 17:17:17');
 
 // 如果需要动态更新时间，可以使用以下代码
 // const now = new Date();

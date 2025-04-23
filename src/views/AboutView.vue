@@ -30,10 +30,10 @@
           <p>
             <strong>版本：</strong> 1.0.0<br>
             <strong>开发者：</strong> <a href="https://github.com/xihan123" target="_blank">xihan123</a><br>
-<!--            <strong>开源协议：</strong> MIT<br>-->
-<!--            <strong>代码仓库：</strong> <a href="https://github.com/xihan123/doro-collector-api"-->
-<!--                                          target="_blank">GitHub</a><br>-->
-<!--            <strong>当前用户：</strong> {{ currentUser }}-->
+            <!--            <strong>开源协议：</strong> MIT<br>-->
+            <!--            <strong>代码仓库：</strong> <a href="https://github.com/xihan123/doro-collector-api"-->
+            <!--                                          target="_blank">GitHub</a><br>-->
+            <!--            <strong>当前用户：</strong> {{ currentUser }}-->
           </p>
         </div>
 
@@ -63,7 +63,7 @@
           <ul>
             <li>在GitHub上<a href="https://github.com/xihan123/doro-collector-api/issues" target="_blank">提交Issue</a>
             </li>
-<!--            <li>发送邮件至：<a href="mailto:contact@example.com">contact@example.com</a></li>-->
+            <!--            <li>发送邮件至：<a href="mailto:contact@example.com">contact@example.com</a></li>-->
           </ul>
         </div>
       </div>
@@ -75,7 +75,7 @@
 import {ref} from 'vue';
 
 // 当前日期和时间
-const currentDateTime = ref('2025-04-22 15:02:34');
+const currentDateTime = ref('2025-04-23 17:17:17');
 
 // 当前用户
 const currentUser = ref('xihan123');
