@@ -107,7 +107,7 @@ export const useStickerStore = defineStore('sticker', {
 
                 if (resetPage || this.page === 1) {
                     // 首页数据直接替换，无需去重
-                      this.stickers = response.items as Sticker[];
+                    this.stickers = response.items as Sticker[];
                 } else {
                     // 使用ID索引去重，性能优化
                     const existingIds = new Set(this.stickers.map(s => s.id));
@@ -295,9 +295,13 @@ export const useStickerStore = defineStore('sticker', {
                 formData.append('content', content);
                 tags.forEach(tag => formData.append('tags', tag));
 
-                await uploadSticker(formData);
-                ElMessage.success('上传成功');
-                return true;
+                const response = await uploadSticker(formData);
+
+                ElMessage({
+                    message: response.message || '上传成功',
+                    type: response.success ? 'success' : 'error',
+                });
+                return response.success;
             } catch (error) {
                 console.error('Failed to upload sticker:', error);
                 ElMessage.error('上传失败');
