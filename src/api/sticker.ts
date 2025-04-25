@@ -54,7 +54,11 @@ export const dislikeSticker = (id: string | number): Promise<{
 };
 
 // 上传表情包
-export const uploadSticker = (data: FormData): Promise<Sticker> => {
+export const uploadSticker = (data: FormData): Promise<{
+    success: boolean;
+    message: string;
+    sticker: Sticker | null;
+}> => {
     return request.post('/stickers/upload', data, {
         headers: {
             'Content-Type': 'multipart/form-data'

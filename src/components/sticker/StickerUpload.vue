@@ -165,7 +165,6 @@ const submitUpload = async () => {
         );
 
         if (result) {
-          ElMessage.success('表情包上传成功');
           resetForm();
 
           // 强制刷新表情包列表数据
