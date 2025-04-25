@@ -30,6 +30,9 @@
           <p>
             <strong>版本：</strong> 1.0.0<br>
             <strong>开发者：</strong> <a href="https://github.com/xihan123" target="_blank">xihan123</a><br>
+            <strong>全部表情包直链下载(每日0点更新,要压缩，大概需要几分钟)</strong> <a
+              href="https://doro-collector-file.tiramisucat.com/doro-sticker-latest.zip"
+              target="_blank">点我下载</a><br>
             <!--            <strong>开源协议：</strong> MIT<br>-->
             <!--            <strong>代码仓库：</strong> <a href="https://github.com/xihan123/doro-collector-api"-->
             <!--                                          target="_blank">GitHub</a><br>-->
@@ -61,9 +64,11 @@
           <h3>问题反馈</h3>
           <p>如果您在使用过程中遇到任何问题，或有功能建议，欢迎通过以下方式联系我们：</p>
           <ul>
-            <li>后端数据相关<a href="https://github.com/xihan123/doro-collector-api/issues" target="_blank">在此提交Issue</a>
+            <li>后端数据相关<a href="https://github.com/xihan123/doro-collector-api/issues"
+                               target="_blank">在此提交Issue</a>
             </li>
-            <li>前端界面相关<a href="https://github.com/xihan123/doro-collector-web/issues" target="_blank">在此提交Issue</a>
+            <li>前端界面相关<a href="https://github.com/xihan123/doro-collector-web/issues"
+                               target="_blank">在此提交Issue</a>
             </li>
             <!--            <li>发送邮件至：<a href="mailto:contact@example.com">contact@example.com</a></li>-->
           </ul>
