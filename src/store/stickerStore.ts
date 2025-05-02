@@ -1,5 +1,6 @@
 import {defineStore} from 'pinia';
 import {
+    deleteSticker,
     dislikeSticker,
     getAllTags,
     getStickerById,
@@ -308,6 +309,20 @@ export const useStickerStore = defineStore('sticker', {
                 return false;
             } finally {
                 this.uploading = false;
+            }
+        },
+        // 删除表情包
+        async deleteSticker(id: string): Promise<void> {
+            try {
+                const response = await deleteSticker(id);
+
+                ElMessage({
+                    message: response.message || '删除成功',
+                    type: response.success ? 'success' : 'error',
+                });
+            } catch (error) {
+                console.error('Failed to delete sticker:', error);
+                ElMessage.error('删除失败');
             }
         },
 

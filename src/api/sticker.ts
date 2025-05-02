@@ -86,3 +86,15 @@ export const downloadStickerImage = async (url: string): Promise<Blob> => {
     const response = await fetch(url, {mode: 'cors'});
     return await response.blob();
 };
+
+// 删除表情包
+export const deleteSticker = (identifier: string | number): Promise<{
+    success: boolean;
+    message: string;
+}> => {
+    return request.delete(`/stickers/${identifier}`, {
+        headers: {
+            'secret-key': import.meta.env.VITE_SECRET_KEY,
+        }
+    });
+};
