@@ -11,6 +11,12 @@
           </el-icon>
           批量下载
         </el-button>
+        <el-button type="danger" size="small" @click="batchDelete" :loading="deleting">
+          <el-icon>
+            <Delete/>
+          </el-icon>
+          批量删除
+        </el-button>
         <el-button type="info" size="small" @click="clearSelected">
           <el-icon>
             <Close/>
@@ -73,12 +79,14 @@ import StickerWaterfall from '@/components/sticker/StickerWaterfall.vue';
 import StickerFilter from '@/components/sticker/StickerFilter.vue';
 import {useStickerStore} from '@/store/stickerStore';
 import {downloadSelectedStickers} from '@/utils/download';
-import {Close, Download} from '@element-plus/icons-vue';
-import {ElMessage} from 'element-plus';
+import {batchDeleteStickers} from '@/api/sticker';
+import {Close, Delete, Download} from '@element-plus/icons-vue';
+import {ElMessage, ElMessageBox} from 'element-plus';
 import type {Sticker} from '@/types/sticker';
 
 const stickerStore = useStickerStore();
 const downloading = ref(false);
+const deleting = ref(false);
 const selectionMode = ref(false);
 
 // 从 store 获取数据
@@ -141,6 +149,70 @@ const downloadSelected = async () => {
     ElMessage.error('下载失败，请重试');
   } finally {
     downloading.value = false;
+  }
+};
+
+// 批量删除表情包
+const batchDelete = async () => {
+  if (selectedCount.value === 0) {
+    ElMessage.warning('请先选择要删除的表情包');
+    return;
+  }
+
+  try {
+    // 确认删除操作
+    await ElMessageBox.confirm(
+        `确定要删除选中的 ${selectedCount.value} 个表情包吗？此操作不可恢复。`,
+        '确认删除',
+        {
+          confirmButtonText: '确定删除',
+          cancelButtonText: '取消',
+          type: 'warning',
+          dangerouslyUseHTMLString: false
+        }
+    );
+
+    // 手动输入安全密钥
+    const { value: secretKey } = await ElMessageBox.prompt(
+        '请输入安全密钥以确认删除操作',
+        '安全验证',
+        {
+          confirmButtonText: '确认删除',
+          cancelButtonText: '取消',
+          inputType: 'password',
+          inputPlaceholder: '请输入安全密钥',
+          inputValidator: (value) => {
+            if (!value) {
+              return '安全密钥不能为空';
+            }
+            return true;
+          }
+        }
+    );
+
+    deleting.value = true;
+    
+    // 执行批量删除，使用用户输入的安全密钥
+    const response = await batchDeleteStickers(stickerStore.selectedStickers, secretKey);
+    
+    if (response.success) {
+      ElMessage.success(response.message || '批量删除成功');
+      
+      // 清空选中状态
+      stickerStore.clearSelectedStickers();
+      
+      // 重新加载表情包列表
+      await stickerStore.fetchStickers(true);
+    } else {
+      ElMessage.error(response.message || '批量删除失败');
+    }
+  } catch (error) {
+    if (error !== 'cancel') {
+      console.error('Batch delete failed:', error);
+      ElMessage.error('批量删除失败，请重试');
+    }
+  } finally {
+    deleting.value = false;
   }
 };
 

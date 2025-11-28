@@ -98,3 +98,19 @@ export const deleteSticker = (identifier: string | number): Promise<{
         }
     });
 };
+
+// 批量删除表情包
+export const batchDeleteStickers = (stickerIds: string[], secretKey?: string): Promise<{
+    success: boolean;
+    message: string;
+}> => {
+    return request.delete('/stickers/batch/', {
+        headers: {
+            'secret-key': secretKey,
+            'Content-Type': 'application/json'
+        },
+        data: {
+            sticker_ids: stickerIds
+        }
+    });
+};
