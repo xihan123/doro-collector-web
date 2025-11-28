@@ -30,7 +30,7 @@ import {computed, ref} from 'vue';
 const currentYear = computed(() => new Date().getFullYear());
 
 // 使用中国格式的日期时间 (YYYY-MM-DD HH:MM:SS)
-const formattedDateTime = ref('2025-04-25 19:23:00');
+const formattedDateTime = ref('2025-11-29 02:30:00');
 
 // 如果需要动态更新时间，可以使用以下代码
 // const now = new Date();
