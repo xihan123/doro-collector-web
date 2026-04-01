@@ -1,116 +1,88 @@
-import {request} from './request';
-import {HotTag, PaginatedResponse, Sticker, StickerQueryParams} from '@/types/sticker';
+import { request } from './client'
+import type { HotTag, PaginatedResponse, Sticker, StickerQueryParams } from '@/types/sticker'
 
-// 获取表情包列表
 export const getStickers = (params: StickerQueryParams): Promise<PaginatedResponse<Sticker>> => {
-    // 特殊处理 tags 数组，确保正确发送多个相同参数名的请求
-    if (params.tags && params.tags.length > 0) {
-        // 创建 URLSearchParams 对象来正确构建查询参数
-        const searchParams = new URLSearchParams();
+  if (params.tags && params.tags.length > 0) {
+    const searchParams = new URLSearchParams()
 
-        // 添加非标签参数
-        Object.entries(params).forEach(([key, value]) => {
-            if (key !== 'tags' && value !== undefined) {
-                searchParams.append(key, String(value));
-            }
-        });
+    Object.entries(params).forEach(([key, value]) => {
+      if (key !== 'tags' && value !== undefined) {
+        searchParams.append(key, String(value))
+      }
+    })
 
-        // 添加每个标签作为单独的参数
-        typeof params.tags !== "string" ? params.tags?.forEach(tag => {
-            searchParams.append('tags', tag);
-        }) : params;
+    params.tags.forEach(tag => {
+      searchParams.append('tags', tag)
+    })
 
-        // 构建请求URL
-        return request.get(`/stickers?${searchParams.toString()}`);
-    }
+    return request.get(`/stickers?${searchParams.toString()}`)
+  }
 
+  return request.get('/stickers', { params })
+}
 
-    return request.get('/stickers', {params});
-};
-
-// 获取表情包详情
 export const getStickerById = (id: string): Promise<Sticker> => {
-    return request.get(`/stickers/${id}`);
-};
+  return request.get(`/stickers/${id}`)
+}
 
-// 喜欢表情包
 export const likeSticker = (id: string | number): Promise<{
-    success: boolean;
-    message: string;
-    sticker: Sticker;
-    action: string | null;
+  success: boolean
+  message: string
+  sticker: Sticker
+  action: string | null
 }> => {
-    return request.post(`/stickers/${id}/like`);
-};
+  return request.post(`/stickers/${id}/like`)
+}
 
-// 不喜欢表情包
 export const dislikeSticker = (id: string | number): Promise<{
-    success: boolean;
-    message: string;
-    sticker: Sticker;
-    action: string | null;
+  success: boolean
+  message: string
+  sticker: Sticker
+  action: string | null
 }> => {
-    return request.post(`/stickers/${id}/dislike`);
-};
+  return request.post(`/stickers/${id}/dislike`)
+}
 
-// 上传表情包
 export const uploadSticker = (data: FormData): Promise<{
-    success: boolean;
-    message: string;
-    sticker: Sticker | null;
+  success: boolean
+  message: string
+  sticker: Sticker | null
 }> => {
-    return request.post('/stickers/upload', data, {
-        headers: {
-            'Content-Type': 'multipart/form-data'
-        }
-    });
-};
+  return request.post('/stickers/upload', data, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  })
+}
 
-// 更新描述
 export const updateStickerDescription = (id: number | string, description: string): Promise<Sticker> => {
-    return request.patch(`/stickers/${id}/description`, {description: description});
-};
+  return request.patch(`/stickers/${id}/description`, { description })
+}
 
-// 添加标签
 export const updateStickerTag = (id: number | string, tags: string[]): Promise<Sticker> => {
-    return request.post(`/stickers/${id}/tags`, {tags: tags});
-};
+  return request.post(`/stickers/${id}/tags`, { tags })
+}
 
-// 获取热门标签
 export const getAllTags = (): Promise<HotTag[]> => {
-    return request.get('/stickers/tags/popular/');
-};
+  return request.get('/stickers/tags/popular/')
+}
 
-// 下载表情包图片
-export const downloadStickerImage = async (url: string): Promise<Blob> => {
-    const response = await fetch(url, {mode: 'cors'});
-    return await response.blob();
-};
-
-// 删除表情包
-export const deleteSticker = (identifier: string | number): Promise<{
-    success: boolean;
-    message: string;
+export const deleteSticker = (identifier: string | number, secretKey?: string): Promise<{
+  success: boolean
+  message: string
 }> => {
-    return request.delete(`/stickers/${identifier}`, {
-        headers: {
-            'secret-key': import.meta.env.VITE_SECRET_KEY,
-        }
-    });
-};
+  return request.delete(`/stickers/${identifier}`, {
+    headers: secretKey ? { 'secret-key': secretKey } : undefined,
+  })
+}
 
-// 批量删除表情包
 export const batchDeleteStickers = (stickerIds: string[], secretKey?: string): Promise<{
-    success: boolean;
-    message: string;
+  success: boolean
+  message: string
 }> => {
-    return request.delete('/stickers/batch/', {
-        headers: {
-            'secret-key': secretKey,
-            'Content-Type': 'application/json'
-        },
-        data: {
-            sticker_ids: stickerIds
-        }
-    });
-};
+  return request.delete('/stickers/batch/', {
+    headers: secretKey ? {
+      'secret-key': secretKey,
+      'Content-Type': 'application/json',
+    } : { 'Content-Type': 'application/json' },
+    data: { sticker_ids: stickerIds },
+  })
+}

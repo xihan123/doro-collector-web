@@ -1,0 +1,21 @@
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity var(--app-transition-normal);
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.button-animated {
+  animation-duration: 0.3s;
+  animation-name: button-pulse;
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes button-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}

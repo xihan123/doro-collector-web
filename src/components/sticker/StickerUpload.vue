@@ -67,7 +67,7 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, reactive, ref} from 'vue';
+import {reactive, ref} from 'vue';
 import {useRouter} from 'vue-router';
 import {useStickerStore} from '@/store/stickerStore';
 import {UploadFilled} from '@element-plus/icons-vue';
@@ -86,7 +86,6 @@ const previewInfo = ref<{
   width: number;
   height: number;
 } | null>(null);
-const availableTags = ref<string[]>([]);
 const uploading = ref(false);
 
 const formData = reactive({
@@ -166,20 +165,13 @@ const submitUpload = async () => {
 
         if (result) {
           resetForm();
-
-          // 强制刷新表情包列表数据
-          await stickerStore.fetchStickers(true);
-
-          // 跳转到首页
           router.push('/');
         }
-      } catch (error) {
-        console.error('Upload failed:', error);
+      } catch {
+        ElMessage.error('上传失败');
       } finally {
         uploading.value = false;
       }
-    } else {
-      console.log('validation failed', fields);
     }
   });
 };
@@ -196,14 +188,6 @@ const resetForm = () => {
   previewUrl.value = '';
   previewInfo.value = null;
 };
-
-// 组件挂载时获取所有标签
-onMounted(async () => {
-  if (stickerStore.availableTags.length === 0) {
-    await stickerStore.fetchAllTags();
-  }
-  availableTags.value = stickerStore.availableTags;
-});
 </script>
 
 <style lang="scss" scoped>

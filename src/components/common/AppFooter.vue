@@ -8,14 +8,14 @@
         <a href="https://www.doro.asia/" target="_blank" class="footer-link">Doro.asia</a>
       </div>
 
-      <p class="copyright">© {{ currentYear }} DORO 表情包收集. All Rights Reserved.</p>
+      <p class="copyright">&copy; {{ currentYear }} DORO 表情包收集. All Rights Reserved.</p>
 
       <div class="footer-records">
-        <a class="record-item beian" href="#" target="_blank">
-          <img src="@/assets/beian.png" alt="公安备案"/>
+        <a class="record-item" href="#" target="_blank">
+          <img src="@/assets/beian.png" alt="公安备案" />
           <span>公安备案号预留</span>
         </a>
-        <a class="record-item icp" href="https://beian.miit.gov.cn/" target="_blank">
+        <a class="record-item" href="https://beian.miit.gov.cn/" target="_blank">
           <span>ICP备案号预留</span>
         </a>
         <p class="updated-time">更新时间：{{ formattedDateTime }}</p>
@@ -25,29 +25,23 @@
 </template>
 
 <script setup lang="ts">
-import {computed, ref} from 'vue';
+import { computed } from 'vue'
 
-const currentYear = computed(() => new Date().getFullYear());
-
-// 使用中国格式的日期时间 (YYYY-MM-DD HH:MM:SS)
-const formattedDateTime = ref('2025-11-29 02:30:00');
-
-// 如果需要动态更新时间，可以使用以下代码
-// const now = new Date();
-// const formattedDateTime = ref(
-//   `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`
-// );
+const currentYear = computed(() => new Date().getFullYear())
+const formattedDateTime = new Date().toLocaleString('zh-CN')
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/styles/mixins' as *;
+
 .app-footer {
   margin-top: 40px;
-  padding: 20px;
+  padding: var(--app-spacing-lg);
   background-color: var(--el-bg-color);
   border-top: 1px solid var(--el-border-color-light);
 
   .footer-content {
-    max-width: 1200px;
+    max-width: var(--app-width-content);
     margin: 0 auto;
     text-align: center;
     color: var(--el-text-color-secondary);
@@ -77,7 +71,7 @@ const formattedDateTime = ref('2025-11-29 02:30:00');
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: var(--app-spacing-sm);
 
       .record-item {
         display: flex;
@@ -103,16 +97,9 @@ const formattedDateTime = ref('2025-11-29 02:30:00');
   }
 }
 
-@media (max-width: 768px) {
+@include respond-to(tablet) {
   .app-footer {
     padding: 15px 10px;
-
-    .footer-content {
-      .footer-records {
-        flex-direction: column;
-        gap: 10px;
-      }
-    }
   }
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="detail-view">
     <div v-if="loading" class="loading-container">
-      <el-skeleton animated :rows="10"/>
+      <el-skeleton animated :rows="10" />
     </div>
 
     <template v-else-if="sticker">
@@ -15,17 +15,15 @@
         <div class="detail-container">
           <div class="sticker-image">
             <el-image
-                :src="sticker.url"
-                fit="contain"
-                :preview-src-list="[sticker.url]"
-                preview-teleported
-                :initial-index="0"
+              :src="sticker.url"
+              fit="contain"
+              :preview-src-list="[sticker.url]"
+              preview-teleported
+              :initial-index="0"
             >
               <template #error>
                 <div class="image-error">
-                  <el-icon>
-                    <PictureRounded/>
-                  </el-icon>
+                  <el-icon><PictureRounded /></el-icon>
                   <span>图片加载失败</span>
                 </div>
               </template>
@@ -34,35 +32,29 @@
 
           <div class="sticker-info">
             <div class="info-header">
-              <!--              <h2 class="sticker-title">{{ sticker.file_name }}</h2>-->
               <div class="interaction-buttons">
                 <el-button
-                    type="primary"
-                    size="large"
-                    @click="handleLike"
-                    class="animated-button"
-                    :class="{ 'is-active': isLiked }"
+                  type="primary"
+                  size="large"
+                  @click="handleLikeAction"
+                  :class="{ 'is-active': isLiked, 'button-animated': isLikeAnimating }"
                 >
-                  <heart-icon class="icon" :filled="isLiked"/>
+                  <heart-icon class="icon" :filled="isLiked" />
                   {{ sticker.likes }} 喜欢
                 </el-button>
                 <el-button
-                    type="danger"
-                    size="large"
-                    @click="handleDislike"
-                    class="animated-button"
-                    :class="{ 'is-active': isDisliked }"
+                  type="danger"
+                  size="large"
+                  @click="handleDislikeAction"
+                  :class="{ 'is-active': isDisliked, 'button-animated': isDislikeAnimating }"
                 >
-                  <thumbs-down-icon class="icon" :filled="isDisliked"/>
+                  <thumbs-down-icon class="icon" :filled="isDisliked" />
                   {{ sticker.dislikes }} 踩
                 </el-button>
               </div>
             </div>
 
             <el-descriptions :column="1" border>
-              <!--              <el-descriptions-item label="文件名">-->
-              <!--                {{ sticker.file_name }}-->
-              <!--              </el-descriptions-item>-->
               <el-descriptions-item label="文件大小">
                 {{ formatFileSize(sticker.file_size) }}
               </el-descriptions-item>
@@ -81,11 +73,11 @@
               <div class="section-title">
                 <h3>描述</h3>
                 <el-button
-                    type="primary"
-                    link
-                    :icon="Edit"
-                    @click="isEditingDescription = true"
-                    v-if="!isEditingDescription"
+                  v-if="!isEditingDescription"
+                  type="primary"
+                  link
+                  :icon="Edit"
+                  @click="startEditDescription"
                 >
                   编辑
                 </el-button>
@@ -95,12 +87,12 @@
                 {{ sticker.description || '暂无描述' }}
               </div>
 
-              <div v-else class="edit-description">
+              <div v-else class="edit-section">
                 <el-input
-                    v-model="editedContent"
-                    type="textarea"
-                    :rows="3"
-                    placeholder="请输入表情包描述"
+                  v-model="editedContent"
+                  type="textarea"
+                  :rows="3"
+                  placeholder="请输入表情包描述"
                 />
                 <div class="edit-actions">
                   <el-button type="primary" @click="saveDescription" :loading="updating">保存</el-button>
@@ -113,11 +105,11 @@
               <div class="section-title">
                 <h3>标签</h3>
                 <el-button
-                    type="primary"
-                    link
-                    :icon="Edit"
-                    @click="isEditingTags = true"
-                    v-if="!isEditingTags"
+                  v-if="!isEditingTags"
+                  type="primary"
+                  link
+                  :icon="Edit"
+                  @click="startEditTags"
                 >
                   编辑
                 </el-button>
@@ -125,30 +117,30 @@
 
               <div v-if="!isEditingTags" class="tags-content">
                 <el-tag
-                    v-for="tag in sticker.tags"
-                    :key="tag"
-                    class="sticker-tag"
+                  v-for="tag in sticker.tags"
+                  :key="tag"
+                  class="sticker-tag"
                 >
                   {{ tag }}
                 </el-tag>
-                <el-empty v-if="sticker.tags.length === 0" description="暂无标签" :image-size="60"/>
+                <el-empty v-if="sticker.tags.length === 0" description="暂无标签" :image-size="60" />
               </div>
 
-              <div v-else class="edit-tags">
+              <div v-else class="edit-section">
                 <el-select
-                    v-model="editedTags"
-                    multiple
-                    filterable
-                    allow-create
-                    default-first-option
-                    placeholder="请输入或选择标签"
-                    style="width: 100%"
+                  v-model="editedTags"
+                  multiple
+                  filterable
+                  allow-create
+                  default-first-option
+                  placeholder="请输入或选择标签"
+                  style="width: 100%"
                 >
                   <el-option
-                      v-for="tag in availableTags"
-                      :key="tag"
-                      :label="tag"
-                      :value="tag"
+                    v-for="tag in stickerStore.availableTags"
+                    :key="tag"
+                    :label="tag"
+                    :value="tag"
                   />
                 </el-select>
                 <div class="edit-actions">
@@ -160,17 +152,17 @@
 
             <div class="action-buttons">
               <el-button
-                  type="success"
-                  :icon="Download"
-                  @click="downloadSticker"
-                  :loading="downloading"
+                type="success"
+                :icon="Download"
+                @click="handleDownloadSticker"
+                :loading="downloading"
               >
                 下载表情包
               </el-button>
               <el-button
-                  type="info"
-                  :icon="Link"
-                  @click="copyImageUrl"
+                type="info"
+                :icon="Link"
+                @click="copyImageUrl"
               >
                 复制图片链接
               </el-button>
@@ -180,205 +172,184 @@
       </el-card>
 
       <el-alert
-          show-icon
-          title="请勿随意修改表情包描述和标签，保持内容的友好与准确性"
-          type="warning"
-          :closable="false"
-          style="margin: 20px 0"
+        show-icon
+        title="请勿随意修改表情包描述和标签，保持内容的友好与准确性"
+        type="warning"
+        :closable="false"
+        style="margin: 20px 0"
       />
     </template>
 
-    <el-empty v-else description="表情包不存在或已被删除"/>
+    <el-empty v-else description="表情包不存在或已被删除" />
   </div>
 </template>
 
 <script setup lang="ts">
-import {computed, onMounted, ref, watch} from 'vue';
-import {useRoute, useRouter} from 'vue-router';
-import {useStickerStore} from '@/store/stickerStore';
-import {downloadSingleSticker} from '@/utils/download';
-import {formatFileSize, formatRelativeTime} from '@/utils/format';
-import {Download, Edit, Link, PictureRounded} from '@element-plus/icons-vue';
-import {ElMessage} from 'element-plus';
-import HeartIcon from "@/components/icons/HeartIcon.vue";
-import ThumbsDownIcon from "@/components/icons/ThumbsDownIcon.vue";
+import { computed, onMounted, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useStickerStore } from '@/store/stickerStore'
+import { useStickerInteractionStore } from '@/store/stickerInteractionStore'
+import { useStickerActions } from '@/composables/useStickerActions'
+import { downloadSingleSticker } from '@/utils/download'
+import { formatFileSize, formatRelativeTime } from '@/utils/format'
+import { Download, Edit, Link, PictureRounded } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import HeartIcon from '@/components/icons/HeartIcon.vue'
+import ThumbsDownIcon from '@/components/icons/ThumbsDownIcon.vue'
 
-const route = useRoute();
-const router = useRouter();
-const stickerStore = useStickerStore();
+const route = useRoute()
+const router = useRouter()
+const stickerStore = useStickerStore()
+const interactionStore = useStickerInteractionStore()
+const { handleLike, handleDislike, handleDownload } = useStickerActions()
 
-const id = computed(() => String(route.params.id));
-const sticker = computed(() => stickerStore.currentSticker);
-const loading = computed(() => stickerStore.loading);
-const availableTags = computed(() => stickerStore.availableTags);
+const id = computed(() => String(route.params.id))
+const sticker = computed(() => stickerStore.currentSticker)
+const loading = computed(() => stickerStore.loading)
+const isLiked = computed(() => sticker.value ? interactionStore.hasUserLiked(sticker.value.id) : false)
+const isDisliked = computed(() => sticker.value ? interactionStore.hasUserDisliked(sticker.value.id) : false)
 
-// 添加计算属性判断用户是否已点赞/点踩
-const isLiked = computed(() => {
-  return sticker.value ? stickerStore.hasUserLiked(sticker.value.id) : false;
-});
-
-const isDisliked = computed(() => {
-  return sticker.value ? stickerStore.hasUserDisliked(sticker.value.id) : false;
-});
+// 动画状态 — 用响应式变量替代 DOM 操作
+const isLikeAnimating = ref(false)
+const isDislikeAnimating = ref(false)
 
 // 编辑状态
-const isEditingDescription = ref(false);
-const isEditingTags = ref(false);
-const editedContent = ref('');
-const editedTags = ref<string[]>([]);
-const updating = ref(false);
-const downloading = ref(false);
+const isEditingDescription = ref(false)
+const isEditingTags = ref(false)
+const editedContent = ref('')
+const editedTags = ref<string[]>([])
+const updating = ref(false)
+const downloading = ref(false)
 
-// 加载表情包详情
 onMounted(async () => {
-  await loadStickerDetail();
-
-  // 如果还没有加载标签列表，就加载一次
-  if (availableTags.value.length === 0) {
-    await stickerStore.fetchAllTags();
+  await loadDetail()
+  if (stickerStore.availableTags.length === 0) {
+    await stickerStore.fetchAllTags()
   }
-});
+})
 
-// 监听路由参数变化，重新加载数据
 watch(() => route.params.id, async () => {
-  console.log('Route params changed, reloading sticker detail', route.params.id);
-  await loadStickerDetail();
-});
+  await loadDetail()
+})
 
-// 加载表情包详情
-const loadStickerDetail = async () => {
+const loadDetail = async () => {
   try {
-
-    await stickerStore.fetchStickerDetail(id.value);
-
-    // 初始化编辑数据
+    await stickerStore.fetchStickerDetail(id.value)
     if (sticker.value) {
-      editedContent.value = sticker.value.description;
-      editedTags.value = [...sticker.value.tags];
+      editedContent.value = sticker.value.description
+      editedTags.value = [...sticker.value.tags]
     }
   } catch (error) {
-    console.error('Failed to load sticker detail:', error);
+    ElMessage.error('获取详情失败')
   }
-};
+}
 
-// 返回上一页
-const goBack = () => {
-  router.back();
-};
+const goBack = () => router.back()
 
-// 处理喜欢
-const handleLike = async () => {
-  if (!sticker.value) return;
-
+// 带动画的交互处理
+const handleLikeAction = async () => {
+  if (!sticker.value) return
+  isLikeAnimating.value = true
   try {
-    const button = document.querySelector('.interaction-buttons .el-button--primary');
-    button?.classList.add('button-animated');
-    await stickerStore.like(sticker.value.id);
-    setTimeout(() => {
-      button?.classList.remove('button-animated');
-    }, 1000);
-  } catch (error) {
-    console.error('Failed to like sticker:', error);
-  }
-};
-
-// 处理踩
-const handleDislike = async () => {
-  if (!sticker.value) return;
-
-  try {
-    const button = document.querySelector('.interaction-buttons .el-button--danger');
-    button?.classList.add('button-animated');
-    await stickerStore.dislike(sticker.value.id);
-    setTimeout(() => {
-      button?.classList.remove('button-animated');
-    }, 1000);
-  } catch (error) {
-    console.error('Failed to dislike sticker:', error);
-  }
-};
-
-// 下载表情包
-const downloadSticker = async () => {
-  if (!sticker.value) return;
-
-  downloading.value = true;
-  try {
-    await downloadSingleSticker(sticker.value);
-    ElMessage.success('下载成功');
-  } catch (error) {
-    console.error('Failed to download sticker:', error);
-    ElMessage.error('下载失败');
+    await handleLike(sticker.value.id)
   } finally {
-    downloading.value = false;
+    setTimeout(() => { isLikeAnimating.value = false }, 300)
   }
-};
+}
 
-// 复制图片链接
+const handleDislikeAction = async () => {
+  if (!sticker.value) return
+  isDislikeAnimating.value = true
+  try {
+    await handleDislike(sticker.value.id)
+  } finally {
+    setTimeout(() => { isDislikeAnimating.value = false }, 300)
+  }
+}
+
+const handleDownloadSticker = async () => {
+  if (!sticker.value) return
+  downloading.value = true
+  try {
+    await downloadSingleSticker(sticker.value)
+    ElMessage.success('下载成功')
+  } catch {
+    ElMessage.error('下载失败')
+  } finally {
+    downloading.value = false
+  }
+}
+
 const copyImageUrl = () => {
-  if (!sticker.value) return;
-
+  if (!sticker.value) return
   try {
-    navigator.clipboard.writeText(sticker.value.url);
-    ElMessage.success('已复制图片链接到剪贴板');
-  } catch (error) {
-    console.error('Failed to copy URL:', error);
-    ElMessage.error('复制失败');
+    navigator.clipboard.writeText(sticker.value.url)
+    ElMessage.success('已复制图片链接到剪贴板')
+  } catch {
+    ElMessage.error('复制失败')
   }
-};
+}
 
-// 保存表情包描述
-const saveDescription = async () => {
-  if (!sticker.value) return;
+const startEditDescription = () => {
+  if (!sticker.value) return
+  editedContent.value = sticker.value.description
+  isEditingDescription.value = true
+}
 
-  updating.value = true;
-  try {
-    await stickerStore.updateStickerDescription(sticker.value.id, editedContent.value);
-    isEditingDescription.value = false;
-  } catch (error) {
-    console.error('Failed to update description:', error);
-  } finally {
-    updating.value = false;
-  }
-};
-
-// 取消编辑描述
 const cancelEditDescription = () => {
-  if (!sticker.value) return;
-  editedContent.value = sticker.value.description;
-  isEditingDescription.value = false;
-};
+  if (!sticker.value) return
+  editedContent.value = sticker.value.description
+  isEditingDescription.value = false
+}
 
-// 保存标签
-const saveTags = async () => {
-  if (!sticker.value) return;
-
-  updating.value = true;
+const saveDescription = async () => {
+  if (!sticker.value) return
+  updating.value = true
   try {
-    await stickerStore.updateStickerTag(sticker.value.id, editedTags.value);
-    isEditingTags.value = false;
-    ElMessage.success('标签更新成功');
-  } catch (error) {
-    console.error('Failed to update tags:', error);
-    ElMessage.error('标签更新失败');
+    await stickerStore.updateStickerDescription(sticker.value.id, editedContent.value)
+    ElMessage.success('更新成功')
+    isEditingDescription.value = false
+  } catch {
+    ElMessage.error('更新失败')
   } finally {
-    updating.value = false;
+    updating.value = false
   }
-};
+}
 
-// 取消编辑标签
+const startEditTags = () => {
+  if (!sticker.value) return
+  editedTags.value = [...sticker.value.tags]
+  isEditingTags.value = true
+}
+
 const cancelEditTags = () => {
-  if (!sticker.value) return;
-  editedTags.value = [...sticker.value.tags];
-  isEditingTags.value = false;
-};
+  if (!sticker.value) return
+  editedTags.value = [...sticker.value.tags]
+  isEditingTags.value = false
+}
+
+const saveTags = async () => {
+  if (!sticker.value) return
+  updating.value = true
+  try {
+    await stickerStore.updateStickerTag(sticker.value.id, editedTags.value)
+    ElMessage.success('标签更新成功')
+    isEditingTags.value = false
+  } catch {
+    ElMessage.error('标签更新失败')
+  } finally {
+    updating.value = false
+  }
+}
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/styles/mixins' as *;
+
 .detail-view {
-  max-width: 1200px;
+  max-width: var(--app-width-content);
   margin: 0 auto;
-  padding: 20px;
+  padding: var(--app-spacing-lg);
 
   .loading-container {
     min-height: 400px;
@@ -390,7 +361,7 @@ const cancelEditTags = () => {
   }
 
   .detail-card {
-    margin-top: 20px;
+    margin-top: var(--app-spacing-lg);
 
     .detail-container {
       display: flex;
@@ -406,9 +377,7 @@ const cancelEditTags = () => {
         .el-image {
           max-width: 100%;
           max-height: 500px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
+          @include flex-center;
         }
 
         .image-error {
@@ -430,31 +399,17 @@ const cancelEditTags = () => {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 20px;
-
-          .sticker-title {
-            margin: 0;
-            font-size: 24px;
-            font-weight: 500;
-            word-break: break-all;
-          }
+          margin-bottom: var(--app-spacing-lg);
 
           .interaction-buttons {
             display: flex;
             gap: 10px;
-
-            .animated-button {
-              transition: transform 0.3s;
-
-              &.button-animated {
-                animation: pulse 1s;
-              }
-            }
           }
         }
 
-        .description-container, .tags-container {
-          margin-top: 20px;
+        .description-container,
+        .tags-container {
+          margin-top: var(--app-spacing-lg);
 
           .section-title {
             display: flex;
@@ -472,12 +427,12 @@ const cancelEditTags = () => {
             margin-top: 10px;
             padding: 10px;
             background-color: var(--el-fill-color-light);
-            border-radius: 4px;
+            border-radius: var(--app-radius-sm);
             min-height: 60px;
             white-space: pre-wrap;
           }
 
-          .edit-description, .edit-tags {
+          .edit-section {
             margin-top: 10px;
 
             .edit-actions {
@@ -492,10 +447,10 @@ const cancelEditTags = () => {
             margin-top: 10px;
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: var(--app-spacing-sm);
 
             .sticker-tag {
-              margin-bottom: 8px;
+              margin-bottom: var(--app-spacing-sm);
             }
           }
         }
@@ -510,7 +465,6 @@ const cancelEditTags = () => {
   }
 }
 
-/* 添加图标样式 */
 .icon {
   vertical-align: middle;
   margin-right: 4px;
@@ -518,65 +472,39 @@ const cancelEditTags = () => {
   height: 18px;
 }
 
-/* 添加激活状态样式 */
 .is-active {
   font-weight: bold;
-
-  //&.el-button--primary, &.el-button--danger {
-  //  background-color: #FFF;
-  //  color: #FF4D4F;
-  //  border-color: #FF4D4F;
-  //
-  //  &:hover {
-  //    background-color: #FFF7F7;
-  //  }
-  //}
 }
 
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-@media (max-width: 768px) {
+@include respond-to(tablet) {
   .detail-view {
     padding: 10px;
 
-    .detail-card {
-      .detail-container {
-        flex-direction: column;
+    .detail-card .detail-container {
+      flex-direction: column;
 
-        .sticker-image {
-          flex: none;
-          width: 100%;
+      .sticker-image {
+        flex: none;
+        width: 100%;
 
-          .el-image {
-            max-height: 300px;
+        .el-image {
+          max-height: 300px;
+        }
+      }
+
+      .sticker-info {
+        .info-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 15px;
+
+          .interaction-buttons {
+            width: 100%;
           }
         }
 
-        .sticker-info {
-          .info-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 15px;
-
-            .interaction-buttons {
-              width: 100%;
-            }
-          }
-
-          .action-buttons {
-            flex-wrap: wrap;
-          }
+        .action-buttons {
+          flex-wrap: wrap;
         }
       }
     }

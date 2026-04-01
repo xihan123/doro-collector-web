@@ -1,55 +1,51 @@
 <template>
   <div class="sticker-list">
     <div v-if="loading && stickers.length === 0" class="loading-container">
-      <el-skeleton :rows="1" animated/>
-      <el-skeleton :rows="1" animated/>
-      <el-skeleton :rows="1" animated/>
+      <el-skeleton v-for="i in 3" :key="i" :rows="1" animated />
     </div>
 
     <template v-else-if="stickers.length > 0">
       <div class="list-container">
         <el-table
-            ref="tableRef"
-            :data="stickers"
-            style="width: 100%"
-            @selection-change="handleSelectionChange"
+          ref="tableRef"
+          :data="stickers"
+          style="width: 100%"
+          @selection-change="handleSelectionChange"
         >
           <el-table-column
-              v-if="selectable"
-              type="selection"
-              width="55"
+            v-if="selectable"
+            type="selection"
+            width="55"
           />
 
           <el-table-column label="预览" width="100">
             <template #default="{ row }">
               <el-image
-                  :src="row.url"
-                  fit="contain"
-                  :preview-src-list="selectable ? null : [row.url]"
-                  preview-teleported
-                  style="width: 80px; height: 80px"
+                :src="row.url"
+                fit="contain"
+                :preview-src-list="selectable ? undefined : [row.url]"
+                preview-teleported
+                style="width: 80px; height: 80px"
               >
                 <template #error>
                   <div class="image-error">
-                    <el-icon>
-                      <PictureRounded/>
-                    </el-icon>
+                    <el-icon><PictureRounded /></el-icon>
                   </div>
                 </template>
               </el-image>
             </template>
           </el-table-column>
 
-          <el-table-column prop="content" label="描述">
+          <el-table-column prop="description" label="描述">
             <template #default="{ row }">
               <div class="content-container">
                 <el-text class="sticker-description">{{ row.description || '无描述' }}</el-text>
                 <div class="sticker-tags">
                   <el-tag
-                      v-for="tag in row.tags.slice(0, 3)"
-                      :key="tag"
-                      size="small"
-                      @click.stop="handleTagClick(tag)"
+                    v-for="tag in row.tags.slice(0, 3)"
+                    :key="tag"
+                    size="small"
+                    @click.stop="handleTagClick(tag)"
                   >
                     {{ tag }}
                   </el-tag>
@@ -61,9 +57,7 @@
             </template>
           </el-table-column>
 
-          <!--          <el-table-column prop="file_name" label="文件名" min-width="120" />-->
-
-          <el-table-column label="尺寸" width="100">
+          <el-table-column label="尺寸" width="100" class-name="hide-on-mobile">
             <template #default="{ row }">
               {{ row.width }}x{{ row.height }}
             </template>
@@ -72,12 +66,18 @@
           <el-table-column label="点赞/踩" width="100">
             <template #default="{ row }">
               <el-space>
-                <el-text type="primary" :class="{ 'text-bold': stickerStore.hasUserLiked(row.id) }">
-                  <heart-icon class="icon" :filled="stickerStore.hasUserLiked(row.id)"/>
+                <el-text
+                  type="primary"
+                  :class="{ 'is-active': interactionStore.hasUserLiked(row.id) }"
+                >
+                  <heart-icon class="icon" :filled="interactionStore.hasUserLiked(row.id)" />
                   {{ row.likes }}
                 </el-text>
-                <el-text type="danger" :class="{ 'text-bold': stickerStore.hasUserDisliked(row.id) }">
-                  <thumbs-down-icon class="icon" :filled="stickerStore.hasUserDisliked(row.id)"/>
+                <el-text
+                  type="danger"
+                  :class="{ 'is-active': interactionStore.hasUserDisliked(row.id) }"
+                >
+                  <thumbs-down-icon class="icon" :filled="interactionStore.hasUserDisliked(row.id)" />
                   {{ row.dislikes }}
                 </el-text>
               </el-space>
@@ -89,38 +89,38 @@
               <el-space>
                 <el-tooltip content="查看详情">
                   <el-button
-                      type="primary"
-                      :icon="More"
-                      circle
-                      @click="navigateToDetail(row.id)"
+                    type="primary"
+                    :icon="More"
+                    circle
+                    @click="navigateToDetail(row.id)"
                   />
                 </el-tooltip>
-
                 <el-tooltip content="下载">
                   <el-button
-                      type="success"
-                      :icon="Download"
-                      circle
-                      @click="handleDownload(row)"
+                    type="success"
+                    :icon="Download"
+                    circle
+                    @click="handleDownload(row)"
                   />
                 </el-tooltip>
-
                 <el-dropdown trigger="click">
                   <el-button circle>
-                    <el-icon>
-                      <MoreFilled/>
-                    </el-icon>
+                    <el-icon><MoreFilled /></el-icon>
                   </el-button>
                   <template #dropdown>
                     <el-dropdown-menu>
-                      <el-dropdown-item @click="handleLike(row.id)"
-                                        :class="{ 'is-active': stickerStore.hasUserLiked(row.id) }">
-                        <heart-icon class="icon" :filled="stickerStore.hasUserLiked(row.id)"/>
+                      <el-dropdown-item
+                        @click="handleLike(row.id)"
+                        :class="{ 'is-active': interactionStore.hasUserLiked(row.id) }"
+                      >
+                        <heart-icon class="icon" :filled="interactionStore.hasUserLiked(row.id)" />
                         点赞
                       </el-dropdown-item>
-                      <el-dropdown-item @click="handleDislike(row.id)"
-                                        :class="{ 'is-active': stickerStore.hasUserDisliked(row.id) }">
-                        <thumbs-down-icon class="icon" :filled="stickerStore.hasUserDisliked(row.id)"/>
+                      <el-dropdown-item
+                        @click="handleDislike(row.id)"
+                        :class="{ 'is-active': interactionStore.hasUserDisliked(row.id) }"
+                      >
+                        <thumbs-down-icon class="icon" :filled="interactionStore.hasUserDisliked(row.id)" />
                         踩一下
                       </el-dropdown-item>
                     </el-dropdown-menu>
@@ -134,138 +134,92 @@
 
       <div class="pagination-container">
         <el-pagination
-            v-model:current-page="currentPage"
-            v-model:page-size="pageSize"
-            :page-sizes="[10, 20, 30, 50]"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="total"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
+          v-model:current-page="currentPage"
+          v-model:page-size="pageSize"
+          :page-sizes="[10, 20, 30, 50]"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total"
+          @size-change="(val: number) => emit('update:size', val)"
+          @current-change="(val: number) => emit('update:page', val)"
         />
       </div>
     </template>
 
-    <el-empty v-else description="暂无表情包"/>
+    <el-empty v-else description="暂无表情包" />
   </div>
 </template>
 
 <script setup lang="ts">
-import {computed, ref, watch} from 'vue';
-import {useRouter} from 'vue-router';
-import {useStickerStore} from '@/store/stickerStore';
-import {downloadSingleSticker} from '@/utils/download';
-import type {Sticker} from '@/types/sticker';
-import {Download, More, MoreFilled, PictureRounded} from '@element-plus/icons-vue';
-import {ElMessage} from 'element-plus';
-import HeartIcon from "@/components/icons/HeartIcon.vue";
-import ThumbsDownIcon from "@/components/icons/ThumbsDownIcon.vue";
+import { computed, ref, watch } from 'vue'
+import { useStickerStore } from '@/store/stickerStore'
+import { useStickerInteractionStore } from '@/store/stickerInteractionStore'
+import { useStickerActions } from '@/composables/useStickerActions'
+import { Download, More, MoreFilled, PictureRounded } from '@element-plus/icons-vue'
+import HeartIcon from '@/components/icons/HeartIcon.vue'
+import ThumbsDownIcon from '@/components/icons/ThumbsDownIcon.vue'
+import type { Sticker } from '@/types/sticker'
 
 const props = defineProps<{
-  stickers: Sticker[];
-  total: number;
-  loading: boolean;
-  selectable?: boolean;
-}>();
+  stickers: Sticker[]
+  total: number
+  loading: boolean
+  selectable?: boolean
+}>()
 
 const emit = defineEmits<{
-  (e: 'update:page', page: number): void;
-  (e: 'update:size', size: number): void;
-  (e: 'selection-change', selection: Sticker[]): void;
-}>();
+  'update:page': [page: number]
+  'update:size': [size: number]
+  'selection-change': [selection: Sticker[]]
+}>()
 
-// 添加表格引用
-const tableRef = ref();
-
-const router = useRouter();
-const stickerStore = useStickerStore();
+const tableRef = ref()
+const stickerStore = useStickerStore()
+const interactionStore = useStickerInteractionStore()
+const { handleLike, handleDislike, handleDownload, handleTagClick, navigateToDetail } = useStickerActions()
 
 const currentPage = computed({
   get: () => stickerStore.page,
-  set: (val) => emit('update:page', val)
-});
+  set: (val) => emit('update:page', val),
+})
 
 const pageSize = computed({
   get: () => stickerStore.size,
-  set: (val) => emit('update:size', val)
-});
-
-const handleSizeChange = (val: number) => {
-  emit('update:size', val);
-};
-
-const handleCurrentChange = (val: number) => {
-  emit('update:page', val);
-};
+  set: (val) => emit('update:size', val),
+})
 
 const handleSelectionChange = (selection: Sticker[]) => {
-  emit('selection-change', selection);
-
-  // 更新 store 中的选择状态
-  stickerStore.clearSelectedStickers();
+  emit('selection-change', selection)
+  interactionStore.clearSelectedStickers()
   selection.forEach(sticker => {
-    stickerStore.toggleSelectedSticker(sticker.id);
-  });
-};
+    interactionStore.toggleSelectedSticker(sticker.id)
+  })
+}
 
-const navigateToDetail = (id: string) => {
-  router.push({name: 'StickerDetail', params: {id}});
-};
-
-const handleLike = async (id: string) => {
-  try {
-    await stickerStore.like(id);
-  } catch (error) {
-    ElMessage.error('点赞失败');
-  }
-};
-
-const handleDislike = async (id: string) => {
-  try {
-    await stickerStore.dislike(id);
-  } catch (error) {
-    ElMessage.error('踩一下失败');
-  }
-};
-
-const handleDownload = async (sticker: Sticker) => {
-  try {
-    await downloadSingleSticker(sticker);
-    ElMessage.success('下载成功');
-  } catch (error) {
-    ElMessage.error('下载失败');
-  }
-};
-
-const handleTagClick = (tag: string) => {
-  stickerStore.setSelectedTags([tag]);
-  stickerStore.fetchStickers(true);
-};
-
-// 添加对store中selectedStickers变化的监听
-watch(() => stickerStore.selectedStickers, (newSelectedIds) => {
-  // 如果选中的数组为空，清除表格的选中状态
+watch(() => interactionStore.selectedStickers, (newSelectedIds) => {
   if (newSelectedIds.length === 0 && tableRef.value) {
-    tableRef.value.clearSelection();
+    tableRef.value.clearSelection()
   }
-}, {deep: true});
+}, { deep: true })
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/styles/mixins' as *;
+
 .sticker-list {
   .loading-container {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    margin-bottom: 20px;
+    gap: var(--app-spacing-lg);
+    margin-bottom: var(--app-spacing-lg);
   }
 
   .list-container {
-    margin-bottom: 20px;
+    margin-bottom: var(--app-spacing-lg);
 
     .content-container {
       .sticker-description {
         display: block;
-        margin-bottom: 8px;
+        margin-bottom: var(--app-spacing-sm);
       }
 
       .sticker-tags {
@@ -287,38 +241,26 @@ watch(() => stickerStore.selectedStickers, (newSelectedIds) => {
   }
 
   .pagination-container {
-    margin-top: 20px;
+    margin-top: var(--app-spacing-lg);
     display: flex;
     justify-content: center;
   }
 }
 
-/* 添加图标样式 */
 .icon {
   vertical-align: middle;
   width: 16px;
   height: 16px;
 }
 
-/* 添加激活状态样式 */
-.text-bold {
-  font-weight: bold;
-
-  &.el-text--primary, &.el-text--danger {
-    color: #FF4D4F !important;
-  }
-}
-
 .is-active {
   font-weight: bold;
-  color: #FF4D4F;
+  color: var(--app-color-accent) !important;
 }
 
-@media (max-width: 768px) {
-  .sticker-list {
-    .list-container {
-      overflow-x: auto;
-    }
+@include respond-to(tablet) {
+  .sticker-list .list-container {
+    overflow-x: auto;
   }
 }
 </style>

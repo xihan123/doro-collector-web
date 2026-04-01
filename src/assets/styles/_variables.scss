@@ -1,0 +1,22 @@
+$bp-mobile: 576px;
+$bp-tablet: 768px;
+
+:root {
+  --app-color-accent: #FF4D4F;
+  --app-spacing-sm: 8px;
+  --app-spacing-md: 16px;
+  --app-spacing-lg: 24px;
+  --app-width-content: 1200px;
+  --app-width-header: 1400px;
+  --app-width-narrow: 800px;
+  --app-radius-sm: 4px;
+  --app-radius-md: 8px;
+  --app-transition-normal: 0.3s ease;
+  --app-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --app-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+html.dark {
+  --app-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --app-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
+}

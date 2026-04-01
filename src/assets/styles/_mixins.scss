@@ -1,0 +1,35 @@
+@use 'variables' as *;
+
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == mobile {
+    @media (max-width: $bp-mobile) { @content; }
+  } @else if $breakpoint == tablet {
+    @media (max-width: $bp-tablet) { @content; }
+  }
+}
+
+@mixin content-container($width: var(--app-width-content)) {
+  max-width: $width;
+  margin: 0 auto;
+  padding: var(--app-spacing-lg);
+
+  @include respond-to(tablet) {
+    padding: var(--app-spacing-sm);
+  }
+}
+
+@mixin card-hover {
+  transition: transform var(--app-transition-normal),
+              box-shadow var(--app-transition-normal);
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--app-shadow-lg);
+  }
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
