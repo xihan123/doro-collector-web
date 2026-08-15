@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 
 const service = axios.create({
   baseURL: '/api',
-  timeout: 60000,
+  timeout: 15000,
 })
 
 // 响应拦截器
@@ -15,16 +15,21 @@ service.interceptors.response.use(
       return res
     }
 
-    // 后端错误码处理
-    if (res.code && res.code !== 200) {
-      return Promise.reject(new Error(res.message || 'Error'))
-    }
-
+    // 后端错误通过 HTTP 状态码返回(FastAPI HTTPException),
+    // 业务层的 success 字段由调用方判断
     return res
   },
   (error) => {
     const data = error.response?.data
-    const message = data?.message || data?.detail || error.message || '网络错误'
+    let message: string
+    if (error.code === 'ECONNABORTED') {
+      message = '请求超时,请稍后重试'
+    } else if (Array.isArray(data?.detail)) {
+      // FastAPI 422 参数校验错误的 detail 是对象数组
+      message = data.detail.map((item: { msg?: string }) => item?.msg).filter(Boolean).join('; ') || '请求参数错误'
+    } else {
+      message = data?.message || data?.detail || error.message || '网络错误'
+    }
     return Promise.reject(new Error(message))
   }
 )
@@ -32,18 +37,19 @@ service.interceptors.response.use(
 // 封装请求方法
 export const request = {
   get<T = any>(url: string, config?: AxiosRequestConfig): Promise<T> {
-    return service.get(url, config)
+    // 拦截器已把响应解包为 response.data,与 axios 声明的返回类型不符,只能断言
+    return service.get(url, config) as Promise<T>
   },
   post<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
-    return service.post(url, data, config)
+    return service.post(url, data, config) as Promise<T>
   },
   patch<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
-    return service.patch(url, data, config)
+    return service.patch(url, data, config) as Promise<T>
   },
   put<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
-    return service.put(url, data, config)
+    return service.put(url, data, config) as Promise<T>
   },
   delete<T = any>(url: string, config?: AxiosRequestConfig): Promise<T> {
-    return service.delete(url, config)
+    return service.delete(url, config) as Promise<T>
   },
 }
