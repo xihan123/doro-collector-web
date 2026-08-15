@@ -5,19 +5,11 @@
         <router-link to="/about" class="footer-link">关于</router-link>
         <a href="https://github.com/xihan123/doro-collector-api" target="_blank" class="footer-link">API</a>
         <a href="https://github.com/xihan123/doro-collector-web" target="_blank" class="footer-link">UI</a>
-        <a href="https://www.doro.asia/" target="_blank" class="footer-link">Doro.asia</a>
+        <a href="https://beian.miit.gov.cn/" target="_blank">赣ICP备2024043470号</a>
+        <a href="https://beian.mps.gov.cn/#/query/webSearch?code=36110002000153" rel="noreferrer" target="_blank">赣公网安备36110002000153号</a>
       </div>
-
       <p class="copyright">&copy; {{ currentYear }} DORO 表情包收集. All Rights Reserved.</p>
-
       <div class="footer-records">
-        <a class="record-item" href="#" target="_blank">
-          <img src="@/assets/beian.png" alt="公安备案" />
-          <span>公安备案号预留</span>
-        </a>
-        <a class="record-item" href="https://beian.miit.gov.cn/" target="_blank">
-          <span>ICP备案号预留</span>
-        </a>
         <p class="updated-time">更新时间：{{ formattedDateTime }}</p>
       </div>
     </div>
@@ -72,22 +64,6 @@ const formattedDateTime = new Date().toLocaleString('zh-CN')
       flex-direction: column;
       align-items: center;
       gap: var(--app-spacing-sm);
-
-      .record-item {
-        display: flex;
-        align-items: center;
-        color: var(--el-text-color-secondary);
-        text-decoration: none;
-
-        &:hover {
-          color: var(--el-color-primary);
-        }
-
-        img {
-          height: 18px;
-          margin-right: 5px;
-        }
-      }
 
       .updated-time {
         margin: 5px 0;
