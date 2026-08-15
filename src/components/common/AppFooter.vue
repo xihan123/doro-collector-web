@@ -5,8 +5,8 @@
         <router-link to="/about" class="footer-link">关于</router-link>
         <a href="https://github.com/xihan123/doro-collector-api" target="_blank" class="footer-link">API</a>
         <a href="https://github.com/xihan123/doro-collector-web" target="_blank" class="footer-link">UI</a>
-        <a href="https://beian.miit.gov.cn/" target="_blank">赣ICP备2024043470号</a>
-        <a href="https://beian.mps.gov.cn/#/query/webSearch?code=36110002000153" rel="noreferrer" target="_blank">赣公网安备36110002000153号</a>
+        <a href="https://beian.miit.gov.cn/" target="_blank" class="footer-link">赣ICP备2024043470号</a>
+        <a href="https://beian.mps.gov.cn/#/query/webSearch?code=36110002000153" rel="noreferrer" target="_blank" class="footer-link">赣公网安备36110002000153号</a>
       </div>
       <p class="copyright">&copy; {{ currentYear }} DORO 表情包收集. All Rights Reserved.</p>
       <div class="footer-records">
