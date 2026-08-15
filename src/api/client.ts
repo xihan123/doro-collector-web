@@ -23,7 +23,8 @@ service.interceptors.response.use(
     return res
   },
   (error) => {
-    const message = error.response?.data?.message || error.message || '网络错误'
+    const data = error.response?.data
+    const message = data?.message || data?.detail || error.message || '网络错误'
     return Promise.reject(new Error(message))
   }
 )

@@ -11,6 +11,9 @@ export interface Sticker {
   tags: string[]
   created_at: string
   updated_at: string
+  review_status?: 'approved' | 'pending' | 'rejected'
+  review_reason?: string | null
+  reviewed_at?: number | null
 }
 
 export interface PaginatedResponse<T> {

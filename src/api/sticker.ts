@@ -86,3 +86,30 @@ export const batchDeleteStickers = (stickerIds: string[], secretKey?: string): P
     data: { sticker_ids: stickerIds },
   })
 }
+
+export const getPendingReviews = (params: { page: number; size: number }, secretKey: string): Promise<PaginatedResponse<Sticker>> => {
+  return request.get('/stickers/review/pending/', {
+    params,
+    headers: { 'secret-key': secretKey },
+  })
+}
+
+export const approveSticker = (id: string | number, secretKey: string): Promise<{
+  success: boolean
+  message: string
+  sticker: Sticker
+}> => {
+  return request.post(`/stickers/review/${id}/approve`, undefined, {
+    headers: { 'secret-key': secretKey },
+  })
+}
+
+export const rejectSticker = (id: string | number, secretKey: string, reason?: string): Promise<{
+  success: boolean
+  message: string
+  sticker: Sticker
+}> => {
+  return request.post(`/stickers/review/${id}/reject`, { reason }, {
+    headers: { 'secret-key': secretKey },
+  })
+}

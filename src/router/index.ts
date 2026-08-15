@@ -21,6 +21,12 @@ const routes: RouteRecordRaw[] = [
         meta: {title: '上传表情包'}
     },
     {
+        path: '/review',
+        name: 'Review',
+        component: () => import('@/views/ReviewView.vue'),
+        meta: {title: '内容审核'}
+    },
+    {
         path: '/about',
         name: 'About',
         component: () => import('@/views/AboutView.vue'),
